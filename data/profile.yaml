@@ -1,0 +1,106 @@
+# REQUIRED: replace every XXX (and review screening answers) with your real information
+# before running the filler. Empty strings ("") mean "leave blank on the form".
+
+# Contact info
+contact:
+  first_name: "XXX"
+  middle_name: ""
+  last_name: "XXX"
+  full_name: "XXX"
+  email: "XXX"
+  phone: "XXX"
+  phone_extension: "XXX"
+  phone_country_code: "XXX"
+  phone_type: "XXX"
+
+  address_line1: "XXX"
+  address_line2: ""
+  city: "XXX"
+  county: "XXX"
+  state: "XXX"
+  postal_code: "XXX"
+  country: "XXX"
+
+  linkedin: "XXX"
+  github: "XXX"
+  portfolio: ""
+  website: ""
+
+summary: >
+  XXX — short professional summary used for LLM essay answers.
+  Replace this with your real background.
+
+work_history:
+  - company: "XXX"
+    title: "XXX"
+    location: "XXX"
+    start: "XXX"
+    end: "XXX"
+    current: false
+    highlights:
+      - "XXX"
+      - "XXX"
+
+  - company: "XXX"
+    title: "XXX"
+    location: "XXX"
+    start: "XXX"
+    end: "XXX"
+    current: false
+    highlights:
+      - "XXX"
+      - "XXX"
+
+education:
+  - school: "XXX"
+    degree: "XXX"
+    specialization: "XXX"
+    location: "XXX"
+    graduation: "XXX"
+    honors: "XXX"
+
+  - school: "XXX"
+    degree: "XXX"
+    specialization: "XXX"
+    location: "XXX"
+    graduation: "XXX"
+    honors: "XXX"
+
+certifications:
+  - name: "XXX"
+    issued: "XXX"
+
+skills:
+  - XXX
+  - XXX
+  - XXX
+
+# Yes/No screening questions — replace with your real answers
+screening:
+  over_18: "XXX"
+  us_citizen: "XXX"
+  work_authorization: "XXX"
+  requires_sponsorship: "XXX"
+  has_visa: "XXX"
+  willing_to_relocate: "XXX"
+  has_preferred_name: "XXX"
+  worked_here_before: "XXX"
+  employed_by_parent_company: "XXX"
+  related_to_employee: "XXX"
+  restrictive_employment_agreement: "XXX"
+  requires_immigration_authorization: "XXX"
+
+# Single checkboxes — true = check, false = leave unchecked
+preferences:
+  agree_privacy_policy: true
+  agree_terms: true
+  job_alerts: false
+
+heard_about:
+  - "XXX"
+
+# What the agent is allowed to auto-fill
+auto_fill:
+  eeo: false
+  legal_attestations: false
+  essay: true
