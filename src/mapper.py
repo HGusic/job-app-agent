@@ -40,6 +40,23 @@ def normalize_label(label: str) -> str:
     return text.strip()
 
 
+def contains_word(text: str, word: str) -> bool:
+    return re.search(rf"\b{re.escape(word)}\b", text) is not None
+
+
+def is_contact_style_label(text: str) -> bool:
+    """Contact fields are short labels, not long screening questions."""
+    if not text:
+        return False
+    if "?" in text:
+        return False
+    if len(text) > 80:
+        return False
+    if len(text.split()) > 10:
+        return False
+    return True
+
+
 def is_eeo_field(label: str) -> bool:
     text = normalize_label(label)
     return any(keyword in text for keyword in EEO_KEYWORDS)
@@ -116,70 +133,78 @@ def map_label_to_field(label: str) -> FieldMapping | None:
     if "legally authorized" in text or "legal right to work" in text:
         return FieldMapping("screening", "work_authorization")
 
-    if ("hear" in text and ("about" in text or "job" in text or "position" in text or "us" in text)) or text in {
+    if (
+        "hear" in text
+        and ("about" in text or "job" in text or "position" in text or contains_word(text, "us"))
+    ) or text in {
         "source",
         "referral source",
         "how did you hear",
     }:
         return FieldMapping("heard_about", "source")
 
-    if "phone code" in text or ("country" in text and "phone" in text):
-        return FieldMapping("contact", "phone_country_code")
+    # Contact mappings only on short field labels — never on long screening questions.
+    if is_contact_style_label(text):
+        if "phone code" in text or (contains_word(text, "country") and "phone" in text):
+            return FieldMapping("contact", "phone_country_code")
 
-    if "first" in text and "name" in text:
-        return FieldMapping("contact", "first_name")
-    if "last" in text and "name" in text:
-        return FieldMapping("contact", "last_name")
-    if "full" in text and "name" in text:
-        return FieldMapping("contact", "full_name")
-    if text == "name" or (
-        ("name" in text)
-        and "first" not in text
-        and "last" not in text
-        and "user" not in text
-        and "preferred" not in text
-        and "company" not in text
-        and "school" not in text
-        and "employer" not in text
-    ):
-        return FieldMapping("contact", "full_name")
+        if "first" in text and "name" in text:
+            return FieldMapping("contact", "first_name")
+        if "middle" in text and "name" in text:
+            return FieldMapping("contact", "middle_name")
+        if "last" in text and "name" in text:
+            return FieldMapping("contact", "last_name")
+        if "full" in text and "name" in text:
+            return FieldMapping("contact", "full_name")
+        if text == "name" or (
+            contains_word(text, "name")
+            and "first" not in text
+            and "middle" not in text
+            and "last" not in text
+            and "user" not in text
+            and "preferred" not in text
+            and "company" not in text
+            and "school" not in text
+            and "employer" not in text
+        ):
+            return FieldMapping("contact", "full_name")
 
-    if "confirm" in text and ("email" in text or "e mail" in text):
-        return FieldMapping("contact", "email")
-    if "email" in text or "e mail" in text:
-        return FieldMapping("contact", "email")
-    if "extension" in text:
-        return FieldMapping("contact", "phone_extension")
-    if any(word in text for word in ("phone", "mobile", "cell", "telephone")):
-        if "code" not in text:
-            return FieldMapping("contact", "phone")
-    if "phone type" in text or text == "phone type" or "device type" in text:
-        return FieldMapping("contact", "phone_type")
+        if "confirm" in text and ("email" in text or "e mail" in text):
+            return FieldMapping("contact", "email")
+        if "email" in text or "e mail" in text:
+            return FieldMapping("contact", "email")
+        if "extension" in text:
+            return FieldMapping("contact", "phone_extension")
+        if any(word in text for word in ("phone", "mobile", "cell", "telephone")):
+            if "code" not in text:
+                return FieldMapping("contact", "phone")
+        if "phone type" in text or text == "phone type" or "device type" in text:
+            return FieldMapping("contact", "phone_type")
 
-    if "address" in text and ("2" in text or "line 2" in text or "apt" in text):
-        return FieldMapping("contact", "address_line2")
-    if any(word in text for word in ("address", "street", "address line 1")):
-        return FieldMapping("contact", "address_line1")
+        if "address" in text and ("2" in text or "line 2" in text or "apt" in text):
+            return FieldMapping("contact", "address_line2")
+        if any(word in text for word in ("address", "street", "address line 1")):
+            return FieldMapping("contact", "address_line1")
 
-    if "city" in text:
-        return FieldMapping("contact", "city")
-    if "county" in text:
-        return FieldMapping("contact", "county")
-    if "state" in text or "province" in text:
-        return FieldMapping("contact", "state")
-    if "zip" in text or "postal" in text:
-        return FieldMapping("contact", "postal_code")
-    if "country" in text and "phone" not in text:
-        return FieldMapping("contact", "country")
+        if contains_word(text, "city"):
+            return FieldMapping("contact", "city")
+        if contains_word(text, "county"):
+            return FieldMapping("contact", "county")
+        if contains_word(text, "state") or contains_word(text, "province"):
+            return FieldMapping("contact", "state")
+        if "zip" in text or "postal" in text:
+            return FieldMapping("contact", "postal_code")
+        if contains_word(text, "country") and "phone" not in text:
+            return FieldMapping("contact", "country")
 
-    if "linkedin" in text:
-        return FieldMapping("contact", "linkedin")
-    if "github" in text:
-        return FieldMapping("contact", "github")
-    if "portfolio" in text:
-        return FieldMapping("contact", "portfolio")
-    if "website" in text or "personal site" in text:
-        return FieldMapping("contact", "website")
+        if "linkedin" in text:
+            return FieldMapping("contact", "linkedin")
+        if "github" in text:
+            return FieldMapping("contact", "github")
+        if "portfolio" in text:
+            return FieldMapping("contact", "portfolio")
+        if "website" in text or "personal site" in text:
+            return FieldMapping("contact", "website")
 
     if "privacy" in text:
         return FieldMapping("preferences", "agree_privacy_policy")

@@ -1,21 +1,25 @@
-# Contact info — replace XXX placeholders with your real details locally.
+# REQUIRED: replace every XXX (and review screening answers) with your real information
+# before running the filler. Empty strings ("") mean "leave blank on the form".
+
+# Contact info
 contact:
   first_name: "XXX"
+  middle_name: ""
   last_name: "XXX"
   full_name: "XXX"
   email: "XXX"
   phone: "XXX"
   phone_extension: "XXX"
-  phone_country_code: "United States"
-  phone_type: "Mobile"
+  phone_country_code: "XXX"
+  phone_type: "XXX"
 
   address_line1: "XXX"
   address_line2: ""
   city: "XXX"
   county: "XXX"
-  state: "TX"
+  state: "XXX"
   postal_code: "XXX"
-  country: "United States"
+  country: "XXX"
 
   linkedin: "XXX"
   github: "XXX"
@@ -23,13 +27,12 @@ contact:
   website: ""
 
 summary: >
-  Software engineer with experience building reliable systems across the full software
-  development lifecycle. Completed B.S. and M.S. in Computer Science with a focus in
-  data science and artificial intelligence.
+  XXX — short professional summary used for LLM essay answers.
+  Replace this with your real background.
 
 work_history:
   - company: "XXX"
-    title: "Software Development Engineer III"
+    title: "XXX"
     location: "XXX"
     start: "XXX"
     end: "XXX"
@@ -39,7 +42,7 @@ work_history:
       - "XXX"
 
   - company: "XXX"
-    title: "Software Development Engineer II"
+    title: "XXX"
     location: "XXX"
     start: "XXX"
     end: "XXX"
@@ -50,15 +53,15 @@ work_history:
 
 education:
   - school: "XXX"
-    degree: "M.S. in Computer Science"
-    specialization: "Data Science / Artificial Intelligence"
+    degree: "XXX"
+    specialization: "XXX"
     location: "XXX"
     graduation: "XXX"
     honors: "XXX"
 
   - school: "XXX"
-    degree: "B.S. in Computer Science"
-    specialization: "Computer Science"
+    degree: "XXX"
+    specialization: "XXX"
     location: "XXX"
     graduation: "XXX"
     honors: "XXX"
@@ -68,37 +71,24 @@ certifications:
     issued: "XXX"
 
 skills:
-  - Python
-  - Pandas
-  - LangChain
-  - LangGraph
-  - AWS
-  - Terraform
-  - Docker
-  - Jenkins
-  - GitLab
-  - JavaScript
-  - C++
-  - REST APIs
-  - Jira
-  - Confluence
-  - Bitbucket
-  - Git
+  - XXX
+  - XXX
+  - XXX
 
-# Yes/No screening questions (radio buttons and dropdowns)
+# Yes/No screening questions — replace with your real answers
 screening:
-  over_18: "Yes"
-  us_citizen: "Yes"
-  work_authorization: "Yes"
-  requires_sponsorship: "No"
-  has_visa: "No"
-  willing_to_relocate: "Yes"
-  has_preferred_name: "No"
-  worked_here_before: "No"
-  employed_by_parent_company: "No"
-  related_to_employee: "No"
-  restrictive_employment_agreement: "No"
-  requires_immigration_authorization: "No"
+  over_18: "XXX"
+  us_citizen: "XXX"
+  work_authorization: "XXX"
+  requires_sponsorship: "XXX"
+  has_visa: "XXX"
+  willing_to_relocate: "XXX"
+  has_preferred_name: "XXX"
+  worked_here_before: "XXX"
+  employed_by_parent_company: "XXX"
+  related_to_employee: "XXX"
+  restrictive_employment_agreement: "XXX"
+  requires_immigration_authorization: "XXX"
 
 # Single checkboxes — true = check, false = leave unchecked
 preferences:
@@ -107,7 +97,7 @@ preferences:
   job_alerts: false
 
 heard_about:
-  - "LinkedIn"
+  - "XXX"
 
 # What the agent is allowed to auto-fill
 auto_fill:

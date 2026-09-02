@@ -17,9 +17,12 @@ def test_normalize_label():
 
 def test_name_mapping():
     assert map_label_to_key("First Name") == "first_name"
+    assert map_label_to_key("Middle Name") == "middle_name"
+    assert map_label_to_key("Middle Name*") == "middle_name"
     assert map_label_to_key("Last Name") == "last_name"
     assert map_label_to_key("Full Name") == "full_name"
     assert map_label_to_key("Name") == "full_name"
+    assert map_label_to_key("Middle Name") != "full_name"
 
 
 def test_contact_mapping():
@@ -132,6 +135,24 @@ def test_confirm_email_mapping():
     mapping = map_label_to_field("Confirm Email Address")
     assert mapping is not None
     assert mapping.key == "email"
+
+
+def test_long_screening_text_does_not_map_to_country():
+    blob = (
+        "Are you required to be authorized by DHS prior to starting work? "
+        "Country of citizenship Please select Are you under an agreement with a former employer?"
+    )
+    assert map_label_to_field(blob) is not None
+    assert map_label_to_field(blob).key != "country"
+    assert map_label_to_field(blob).section == "screening"
+
+
+def test_united_states_label_is_not_state():
+    assert map_label_to_field("United States") is None
+    assert map_label_to_field("Country") is not None
+    assert map_label_to_field("Country").key == "country"
+    assert map_label_to_field("State") is not None
+    assert map_label_to_field("State").key == "state"
 
 
 def test_skip_rules():

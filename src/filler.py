@@ -70,39 +70,63 @@ def is_weak_label(label: str) -> bool:
     normalized = normalize_label(text)
     if is_placeholder_value(normalized):
         return True
-    if len(normalized) < 15 and "?" not in text:
-        return True
     return False
 
 
 async def field_question_label(page: Page, element: Locator) -> str:
+    """Read nearby question text — prefer tight containers, reject huge page blobs."""
     try:
-        return await element.evaluate(
+        text = await element.evaluate(
             """
             (el) => {
-                const container = el.closest(
-                    'tr, li, fieldset, [class*="question"], [class*="field"], '
-                    + '[class*="form-group"], [class*="form-row"], .row, [data-testid]'
-                ) || el.parentElement?.parentElement;
-                if (!container) return '';
-                const clone = container.cloneNode(true);
-                clone.querySelectorAll(
-                    'input, select, textarea, button, [role="listbox"], [role="combobox"], '
-                    + '[role="button"], svg, img'
-                ).forEach((node) => node.remove());
-                return (clone.textContent || '').replace(/\\s+/g, ' ').trim();
+                const selectors = [
+                    '[class*="question"]',
+                    '[class*="form-group"]',
+                    '[class*="form-row"]',
+                    'fieldset',
+                    'tr',
+                    'li',
+                    '[class*="field"]',
+                    '[data-testid]',
+                ];
+                let best = '';
+                for (const selector of selectors) {
+                    const container = el.closest(selector);
+                    if (!container) continue;
+                    const clone = container.cloneNode(true);
+                    clone.querySelectorAll(
+                        'input, select, textarea, button, [role="listbox"], [role="combobox"], '
+                        + '[role="button"], svg, img'
+                    ).forEach((node) => node.remove());
+                    const text = (clone.textContent || '').replace(/\\s+/g, ' ').trim();
+                    if (!text) continue;
+                    // Prefer the shortest non-empty container that still has a question/label.
+                    if (!best || text.length < best.length) {
+                        best = text;
+                    }
+                }
+                return best;
             }
             """
         )
     except Exception:
         return ""
 
+    text = (text or "").strip()
+    # Oversized blobs cause false matches (e.g. "country" → United States on every field).
+    if len(text) > 400:
+        return ""
+    return text
+
 
 async def resolve_field_label(page: Page, element: Locator) -> str:
-    """Prefer the surrounding question text over control text like 'Please select'."""
+    """Use surrounding question text only when the control label is weak (e.g. Please select)."""
     label = await accessible_name(page, element)
+    if not is_weak_label(label):
+        return label
+
     question = await field_question_label(page, element)
-    if question and (is_weak_label(label) or len(question) > len(label)):
+    if question:
         return question
     return label
 

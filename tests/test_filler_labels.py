@@ -7,6 +7,7 @@ def test_is_weak_label():
     assert is_weak_label("Please select")
     assert is_weak_label("Select...")
     assert not is_weak_label("Are you a U.S. Citizen?")
+    assert not is_weak_label("Country")
 
 
 def test_screening_questions_from_container_style_labels():
@@ -22,3 +23,5 @@ def test_screening_questions_from_container_style_labels():
     )
     assert map_label_to_field(immigration).key == "requires_immigration_authorization"
     assert map_label_to_field(agreement).key == "restrictive_employment_agreement"
+    assert map_label_to_field(immigration).key != "country"
+    assert map_label_to_field(agreement).key != "country"
